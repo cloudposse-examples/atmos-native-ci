@@ -46,6 +46,18 @@ This project uses:
 
 ## Usage
 
+### Local Development
+
+Run the application locally using Podman Compose:
+
+```bash
+# Start the app locally (builds and runs on http://localhost:8080)
+atmos up
+
+# Stop the app
+atmos down
+```
+
 ### CI/CD Workflows
 
 | Workflow | Trigger | Action |
