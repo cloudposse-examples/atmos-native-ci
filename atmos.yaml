@@ -77,7 +77,18 @@ logs:
 
 settings:
   telemetry:
-    enabled: false  
+    enabled: false
+
+docs:
+  generate:
+    readme:
+      base-dir: .
+      template: ".github/README.md.gotmpl"
+      output: "README.md"
+      terraform:
+        enabled: false
+      input:
+        - "README.yaml"
 
 auth:
   logs:

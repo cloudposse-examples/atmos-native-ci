@@ -1,0 +1,13 @@
+# Custom Atmos commands for local development
+# Usage: atmos up, atmos down
+
+commands:
+  - name: up
+    description: Start the application locally using Podman Compose
+    steps:
+      - podman compose -f test/docker-compose.yml up --build
+
+  - name: down
+    description: Stop the local Podman Compose application
+    steps:
+      - podman compose -f test/docker-compose.yml down

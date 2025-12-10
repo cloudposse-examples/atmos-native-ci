@@ -1,0 +1,81 @@
+# {{(ds "config").name}} <a href="https://cloudposse.com/"><img align="right" src="https://cloudposse.com/logo-300x69.svg" width="150" /></a>
+
+{{ if has (ds "config") "badges" }}
+{{- range $badge := (ds "config").badges }}
+[![{{ $badge.name }}]({{ $badge.image }})]({{ $badge.url }})
+{{- end }}
+{{ end }}
+
+{{ if has (ds "config") "description" }}
+{{ (ds "config").description }}
+{{- end }}
+
+{{ if has (ds "config") "introduction" }}
+## Introduction
+
+{{ (ds "config").introduction }}
+{{ end }}
+
+{{ if has (ds "config") "usage" }}
+## Usage
+
+{{ (ds "config").usage }}
+{{ end }}
+
+{{ if has (ds "config") "examples" }}
+## Examples
+
+{{ (ds "config").examples }}
+{{ end }}
+
+{{ if has (ds "config") "include" }}
+{{ range $file := (datasource "config").include -}}
+{{ (include "includes" $file) }}
+{{- end }}
+{{- end }}
+
+{{ if has (ds "config") "related" }}
+## Related Projects
+
+Check out these related projects.
+{{ range $related := (ds "config").related }}
+{{ printf "- [%s](%s) - %s" $related.name $related.url $related.description }}{{ end }}
+
+{{- end}}
+
+{{ if has (ds "config") "references" }}
+## References
+
+For additional context, refer to some of these links.
+{{ range $reference := (ds "config").references }}
+{{ printf "- [%s](%s) - %s" $reference.name $reference.url $reference.description }}{{ end }}
+
+{{ end}}
+
+## Slack Community
+
+Join our [Open Source Community](https://slack.cloudposse.com) on Slack. It's **FREE** for everyone! Our "SweetOps" community is where you get to talk with others who share a similar vision for how to rollout and manage infrastructure. This is the best place to talk shop, ask questions, solicit feedback, and work together as a community to build totally *sweet* infrastructure.
+
+## Newsletter
+
+Sign up for [our newsletter](https://cpco.io/newsletter) and join 3,000+ DevOps engineers, CTOs, and founders who get insider access to the latest DevOps trends, so you can always stay in the know. Dropped straight into your Inbox every week — and usually a 5-minute read.
+
+## Office Hours <a href="https://cloudposse.com/office-hours"><img src="https://img.cloudposse.com/fit-in/200x200/https://cloudposse.com/wp-content/uploads/2019/08/Powered-by-Zoom.png" align="right" /></a>
+
+[Join us every Wednesday via Zoom](https://cloudposse.com/office-hours) for your weekly dose of insider DevOps trends, AWS news and Terraform insights, all sourced from our SweetOps community, plus a _live Q&A_ that you can't find anywhere else. It's **FREE** for everyone!
+
+{{- if eq (ds "config").license "APACHE2" }}
+
+## License
+
+<a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" alt="License"></a>
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for full details.
+{{- end }}
+
+## Trademarks
+
+All other trademarks referenced herein are the property of their respective owners.
+
+---
+Copyright © 2017-{{ time.Now.Year }} [Cloud Posse, LLC](https://cloudposse.com)
