@@ -179,7 +179,27 @@ usage: |-
   - [Atmos](https://atmos.tools/install) installed
   - [OpenTofu](https://opentofu.org/docs/intro/install/) installed
   - AWS credentials configured
-  - ECS cluster and supporting infrastructure deployed
+
+  #### Infrastructure Dependencies
+
+  Before deploying, you must have the following infrastructure deployed:
+
+  1. **VPC** - With public/private subnets
+  2. **ECS Cluster** - With an Application Load Balancer (ALB) and DNS records configured
+  3. **EFS** (optional) - For persistent storage volumes
+
+  Then configure the dependencies in `terraform/stacks/`. You have two options:
+
+  **Option 1: Use `!terraform.state` (recommended)**
+
+  Update the dependency configurations in `terraform/stacks/deps/` to point to your infrastructure's remote state:
+  - `deps/vpc.yaml` - VPC component remote state location
+  - `deps/ecs.yaml` - ECS cluster component remote state location
+  - `deps/efs.yaml` - EFS component remote state location (if using volumes)
+
+  **Option 2: Hardcode values (brownfield)**
+
+  Replace the `!terraform.state` lookups in `terraform/stacks/defaults/app.yaml` with hardcoded values for your infrastructure. See [`terraform/stacks/defaults/README.md`](terraform/stacks/defaults/README.md) for required variables and a complete example.
 
   #### Local Deployment
 
