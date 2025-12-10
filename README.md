@@ -1,14 +1,20 @@
 # example-app-on-ecs <a href="https://cloudposse.com/"><img align="right" src="https://cloudposse.com/logo-300x69.svg" width="150" /></a>
 
-[![Latest Release](https://img.shields.io/github/release/cloudposse/example-app-on-ecs.svg?style=for-the-badge)](https://github.com/cloudposse/example-app-on-ecs/releases/latest)
-[![Last Updated](https://img.shields.io/github/last-commit/cloudposse/example-app-on-ecs/main?style=for-the-badge)](https://github.com/cloudposse/example-app-on-ecs/commits/main/)
+
+[![Latest Release](https://img.shields.io/github/release/cloudposse-examples/app-on-ecs-v2.svg?style=for-the-badge)](https://github.com/cloudposse-examples/app-on-ecs-v2/releases/latest)
+[![Last Updated](https://img.shields.io/github/last-commit/cloudposse-examples/app-on-ecs-v2/main?style=for-the-badge)](https://github.com/cloudposse-examples/app-on-ecs-v2/commits/main/)
 [![Slack Community](https://slack.cloudposse.com/for-the-badge.svg)](https://slack.cloudposse.com)
+
+
 
 Example application deployed to AWS ECS using [Atmos](https://atmos.tools) and [OpenTofu](https://opentofu.org).
 
 This repository demonstrates an elegant, self-contained approach to deploying containerized applications on ECS Fargate with automated CI/CD pipelines.
 
-## Application
+
+## Introduction
+
+### Application
 
 A simple Go web server that serves static HTML pages.
 
@@ -19,33 +25,14 @@ A simple Go web server that serves static HTML pages.
 | `/healthz` | Health check endpoint (returns `OK`) |
 | `/shutdown` | Graceful shutdown trigger |
 
-### Environment Variables
+#### Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `COLOR` | `green` | Background color for the index page |
 | `LISTEN` | `:8080` | Address and port to listen on |
 
-## Repository Structure
-
-```
-├── main.go                    # Go application
-├── Dockerfile                 # Multi-stage container build
-├── atmos.yaml                 # Atmos configuration
-├── public/                    # Static HTML assets
-├── rootfs/                    # Container filesystem overlay
-├── terraform/
-│   ├── components/            # Terraform/OpenTofu modules
-│   │   └── ecs-task/          # ECS task definition component
-│   └── stacks/                # Environment configurations
-│       ├── dev.yaml
-│       ├── staging.yaml
-│       ├── prod.yaml
-│       └── preview.yaml
-└── .github/workflows/         # CI/CD pipelines
-```
-
-## Infrastructure
+### Infrastructure
 
 This project uses:
 
@@ -55,7 +42,11 @@ This project uses:
 - **AWS ECR** - Container image registry
 - **AWS EFS** - Persistent file storage (optional)
 
-## CI/CD Workflows
+
+
+## Usage
+
+### CI/CD Workflows
 
 | Workflow | Trigger | Action |
 |----------|---------|--------|
@@ -65,7 +56,7 @@ This project uses:
 | `preview-cleanup.yml` | PR closed | Destroy preview environment |
 | `validate.yml` | Pull request | Run validation checks |
 
-### Main Branch Workflow
+#### Main Branch Workflow
 
 ```mermaid
 sequenceDiagram
@@ -88,7 +79,7 @@ sequenceDiagram
     GA->>GH: Create draft release
 ```
 
-### Release Workflow
+#### Release Workflow
 
 ```mermaid
 sequenceDiagram
@@ -113,7 +104,7 @@ sequenceDiagram
     ECS-->>GA: Production deployed
 ```
 
-### Feature Branch Workflow (Preview Environments)
+#### Feature Branch Workflow (Preview Environments)
 
 ```mermaid
 sequenceDiagram
@@ -141,7 +132,7 @@ sequenceDiagram
     TF->>ECS: Delete preview ECS service
 ```
 
-### Environment Promotion Flow
+#### Environment Promotion Flow
 
 ```mermaid
 graph LR
@@ -159,16 +150,16 @@ graph LR
     L --> M[Cleanup Preview]
 ```
 
-## Deployment
+### Deployment
 
-### Prerequisites
+#### Prerequisites
 
 - [Atmos](https://atmos.tools/install) installed
 - [OpenTofu](https://opentofu.org/docs/intro/install/) installed
 - AWS credentials configured
 - ECS cluster and supporting infrastructure deployed
 
-### Local Deployment
+#### Local Deployment
 
 ```bash
 # Deploy to dev environment
@@ -181,13 +172,13 @@ atmos terraform deploy app -s staging
 atmos terraform deploy app -s prod
 ```
 
-### CI/CD Deployment
+#### CI/CD Deployment
 
 1. Push to `main` branch → automatically deploys to dev
 2. Create a GitHub release → automatically deploys to staging and prod
 3. Open a PR with `deploy` label → deploys to a preview environment
 
-## Configuration
+### Configuration
 
 Stack configurations are in `terraform/stacks/`. Each environment imports shared defaults and specifies environment-specific settings:
 
@@ -203,6 +194,52 @@ vars:
 ```
 
 Container configuration is defined in `terraform/stacks/defaults/app.yaml` and can be customized per environment.
+
+### Repository Structure
+
+```
+.
+├── main.go                    # Go application
+├── Dockerfile                 # Multi-stage container build
+├── atmos.yaml                 # Atmos configuration
+├── README.yaml                # README source (this file)
+├── public/                    # Static HTML assets
+├── rootfs/                    # Container filesystem overlay
+├── terraform/
+│   ├── components/            # Terraform/OpenTofu modules
+│   │   └── ecs-task/          # ECS task definition component
+│   └── stacks/                # Environment configurations
+│       ├── dev.yaml
+│       ├── staging.yaml
+│       ├── prod.yaml
+│       └── preview.yaml
+└── .github/
+    ├── workflows/             # CI/CD pipelines
+    └── README.md.gotmpl       # README template
+```
+
+### Building Documentation
+
+To regenerate the README from this file, run:
+
+```bash
+atmos docs generate readme
+```
+
+
+
+
+
+
+
+## Related Projects
+
+Check out these related projects.
+
+- [Atmos](https://atmos.tools) - Universal Tool for DevOps and Cloud Automation
+- [terraform-aws-components](https://github.com/cloudposse/terraform-aws-components) - Opinionated, self-contained Terraform root modules for Cloud Posse reference architecture
+
+
 
 ## Slack Community
 
