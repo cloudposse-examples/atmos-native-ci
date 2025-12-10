@@ -3,11 +3,11 @@
 
 commands:
   - name: up
-    description: Start the application locally using Docker Compose
+    description: Start the application locally using Podman Compose
     steps:
-      - docker-compose -f test/docker-compose.yml up --build
+      - podman compose -f test/docker-compose.yml up --build
 
   - name: down
-    description: Stop the local Docker Compose application
+    description: Stop the local Podman Compose application
     steps:
-      - docker-compose -f test/docker-compose.yml down
+      - podman compose -f test/docker-compose.yml down

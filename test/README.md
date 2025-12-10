@@ -1,6 +1,6 @@
 # Test
 
-Local development testing using Docker Compose.
+Local development testing using Podman Compose.
 
 ## Quick Start
 
@@ -12,10 +12,10 @@ atmos up
 atmos down
 ```
 
-Or use docker-compose directly:
+Or use podman compose directly:
 
 ```bash
-docker-compose up --build
+podman compose up --build
 ```
 
 The app will be available at http://localhost:8080

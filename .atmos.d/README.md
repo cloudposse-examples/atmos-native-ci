@@ -4,5 +4,5 @@ Custom Atmos configuration that is automatically merged with `atmos.yaml`.
 
 ## Custom Commands
 
-- `atmos up` - Start the application locally using Docker Compose
-- `atmos down` - Stop the local Docker Compose application
+- `atmos up` - Start the application locally using Podman Compose
+- `atmos down` - Stop the local Podman Compose application
