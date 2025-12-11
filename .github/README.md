@@ -16,7 +16,7 @@ This repository demonstrates an elegant, self-contained approach to deploying co
 
 ### Application
 
-A simple Go web server that serves static HTML pages. See [`app/`](app/) for application details.
+A simple Go web server designed to demonstrate container deployment strategies. Each request increments a counter, and the background color is configurable - making it easy to visualize blue/green deployments and load balancing. The `/dashboard` endpoint displays a grid of auto-refreshing iframes to show traffic distribution across instances. See [`app/`](app/) for details.
 
 ### Infrastructure
 

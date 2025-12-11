@@ -1,13 +1,13 @@
 # Example Application
 
-A simple Go web server that serves static HTML pages.
+A simple Go web server designed to demonstrate container deployment strategies. Each request increments a counter, and the background color is configurable via environment variable - making it easy to visualize blue/green deployments, canary releases, and load balancing across multiple instances.
 
 ## Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
-| `/` | Index page with configurable color and request counter |
-| `/dashboard` | Dashboard view |
+| `/` | Index page with configurable background color and request counter that increments on each refresh |
+| `/dashboard` | Grid of auto-refreshing iframes showing the index page - useful for visualizing load balancing across multiple container instances |
 | `/healthz` | Health check endpoint (returns `OK`) |
 | `/shutdown` | Graceful shutdown trigger |
 
