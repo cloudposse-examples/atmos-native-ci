@@ -97,4 +97,4 @@ auth:
       via:
         provider: github-oidc
       principal:
-        assume_role: arn:aws:iam::068007702576:role/cplive-plat-gbl-dev-terraform
+        assume_role: arn:aws:iam::068007702576:role/cplive-plat-gbl-dev-app-on-ecs-v2
