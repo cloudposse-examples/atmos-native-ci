@@ -81,9 +81,6 @@ settings:
     enabled: false  
 
 auth:
-  logs:
-    level: Debug
-  
   providers:
     github-oidc:
       kind: github/oidc
