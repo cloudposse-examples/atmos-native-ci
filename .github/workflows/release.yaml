@@ -19,6 +19,7 @@ jobs:
         uses: cloudposse/github-action-setup-atmos@v2
         with:
           install-wrapper: false
+          atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,6 +69,7 @@ jobs:
         uses: cloudposse/github-action-setup-atmos@v2
         with:
           install-wrapper: false
+          atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -100,6 +102,7 @@ jobs:
         uses: cloudposse/github-action-setup-atmos@v2
         with:
           install-wrapper: false
+          atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
         uses: actions/checkout@v4
