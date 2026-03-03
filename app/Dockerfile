@@ -1,4 +1,4 @@
-FROM golang:alpine3.11 AS builder
+FROM golang:1.26-alpine AS builder
 
 # Copy source into builder
 ADD . /src
@@ -8,11 +8,11 @@ RUN cd /src && \
     go build -o example-app
 
 # Build the final image
-FROM alpine:3.19 as final
+FROM alpine:3.22 AS final
 
 # Install the cloudposse alpine repository
 ADD https://apk.cloudposse.com/ops@cloudposse.com.rsa.pub /etc/apk/keys/
-RUN echo "@cloudposse https://apk.cloudposse.com/3.11/vendor" >> /etc/apk/repositories
+RUN echo "@cloudposse https://apk.cloudposse.com/3.22/vendor" >> /etc/apk/repositories
 
 RUN apk add --no-cache bash curl
 
