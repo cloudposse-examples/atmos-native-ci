@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -33,7 +32,7 @@ func main() {
 	})
 
 	// Simulate failure
-	boom, _ := ioutil.ReadFile("public/shutdown.html")
+	boom, _ := os.ReadFile("public/shutdown.html")
 	m.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(boom))
 		log.Printf("Received shutdown request\n")
@@ -45,14 +44,14 @@ func main() {
 	})
 
 	// Dashboard
-	dashboard, _ := ioutil.ReadFile("public/dashboard.html")
+	dashboard, _ := os.ReadFile("public/dashboard.html")
 	m.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(dashboard))
 		log.Printf("GET %s\n", r.URL.Path)
 	})
 
 	// Default
-	index, _ := ioutil.ReadFile("public/index.html")
+	index, _ := os.ReadFile("public/index.html")
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		count += 1
 		fmt.Fprintf(w, string(index), c, count)
