@@ -22,6 +22,8 @@ EXPOSE 8080
 # Set the runtime working directory
 WORKDIR /app
 
+ENV TEST TEST
+
 # Copy the helmfile deployment configuration
 COPY public/ /app/public/
 
