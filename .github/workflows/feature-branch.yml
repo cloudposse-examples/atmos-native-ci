@@ -63,7 +63,7 @@ jobs:
     if: ${{ contains(github.event.pull_request.labels.*.name, 'deploy') }}
     environment:
       name: preview
-      url: ${{ steps.deploy.outputs.url }}
+      url: ${{ steps.deploy.outputs.output_url }}
     steps:
       - name: Install Atmos
         uses: cloudposse/github-action-setup-atmos@v2
