@@ -82,7 +82,7 @@ settings:
 
 ci:
   # Auto-enabled when CI detected, or explicit
-  enabled: true
+  enabled: false
 
   # Output variables for downstream jobs
   # GitHub: $GITHUB_OUTPUT, GitLab: dotenv artifacts
