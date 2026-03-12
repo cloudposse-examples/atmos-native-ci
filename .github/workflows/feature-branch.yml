@@ -89,4 +89,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ATMOS_PROFILE: github
         run: |
+          atmos toolchain install
           atmos terraform deploy app -s preview
