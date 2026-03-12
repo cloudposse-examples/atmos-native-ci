@@ -5,3 +5,5 @@ release/*
 **/*.tfvars.json
 **/*.planfile
 **/backend.tf.json
+
+.tools
