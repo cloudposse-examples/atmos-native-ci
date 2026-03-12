@@ -85,4 +85,5 @@ jobs:
           ATMOS_PROFILE: github
         run: |
           atmos toolchain install
+          atmos toolchain env --format github
           atmos terraform deploy app -s preview
