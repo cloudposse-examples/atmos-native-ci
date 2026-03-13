@@ -13,7 +13,23 @@ permissions:
   checks: write
 
 jobs:
+  test:
+    runs-on: ["ubuntu-latest"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: app/go.mod
+
+      - name: Run tests
+        working-directory: app
+        run: go test -v ./...
+
   build:
+    needs: [ test ]
     runs-on: ["ubuntu-latest"]
     steps:
       - name: Install Atmos

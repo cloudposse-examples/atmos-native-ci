@@ -34,7 +34,7 @@ func main() {
 	// Simulate failure
 	boom, _ := os.ReadFile("public/shutdown.html")
 	m.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, string(boom))
+		w.Write(boom)
 		log.Printf("Received shutdown request\n")
 		go func() {
 			if err := s.Shutdown(context.Background()); err != nil {
@@ -46,7 +46,7 @@ func main() {
 	// Dashboard
 	dashboard, _ := os.ReadFile("public/dashboard.html")
 	m.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, string(dashboard))
+		w.Write(dashboard)
 		log.Printf("GET %s\n", r.URL.Path)
 	})
 

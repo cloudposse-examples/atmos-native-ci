@@ -1,13 +1,22 @@
 # Custom Atmos commands for local development
-# Usage: atmos up, atmos down
+# Usage: atmos up, atmos down, atmos test
 
 commands:
   - name: up
     description: Start the application locally using Podman Compose
+    working_directory: app/test
     steps:
-      - podman compose -f app/test/docker-compose.yml up --build
+      - echo "Starting app at http://localhost:8080 (dashboard at http://localhost:8080/dashboard)"
+      - podman compose up --build
 
   - name: down
     description: Stop the local Podman Compose application
+    working_directory: app/test
     steps:
-      - podman compose -f app/test/docker-compose.yml down
+      - podman compose down
+
+  - name: test
+    description: Run Go tests
+    working_directory: app
+    steps:
+      - go test -v ./...
