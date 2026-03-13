@@ -18,7 +18,7 @@ components:
             healthCheck:
               command: ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]
               interval: 5
-              retries: 2
+              retries: 3
               startPeriod: 5
               timeout: 3
             logConfiguration:

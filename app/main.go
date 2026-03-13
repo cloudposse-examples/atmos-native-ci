@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync/atomic"
+	"time"
 )
 
 func main() {
@@ -20,6 +22,8 @@ func main() {
 	}
 
 	count := 0
+	var healthy atomic.Bool
+	healthy.Store(true)
 
 	m := http.NewServeMux()
 	s := http.Server{Addr: addr, Handler: m}
@@ -28,15 +32,23 @@ func main() {
 
 	// Healthcheck endpoint
 	m.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		if !healthy.Load() {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprintf(w, "SHUTTING DOWN")
+			return
+		}
 		fmt.Fprintf(w, "OK")
 	})
 
 	// Simulate failure
 	m.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
+		healthy.Store(false)
 		boom, _ := os.ReadFile("public/shutdown.html")
 		w.Write(boom)
-		log.Printf("Received shutdown request\n")
+		log.Printf("Received shutdown request, failing health checks and waiting for drain\n")
 		go func() {
+			time.Sleep(12 * time.Second)
+			log.Printf("Drain period complete, shutting down server\n")
 			if err := s.Shutdown(context.Background()); err != nil {
 				log.Fatal(err)
 			}
