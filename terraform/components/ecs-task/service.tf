@@ -65,8 +65,9 @@ module "alb_ingress" {
   protocol                         = "HTTP"
   port                             = 80
 
-  deregistration_delay       = 5
-  stickiness_enabled         = false
+  load_balancing_algorithm_type = "least_outstanding_requests"
+  deregistration_delay         = 5
+  stickiness_enabled           = false
   stickiness_type            = "lb_cookie"
   stickiness_cookie_duration = 86400
 
@@ -101,7 +102,7 @@ resource "aws_ecs_service" "default" {
   deployment_maximum_percent         = var.service.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.service.deployment_minimum_healthy_percent
 
-  availability_zone_rebalancing = "ENABLED"
+  availability_zone_rebalancing = "DISABLED"
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
