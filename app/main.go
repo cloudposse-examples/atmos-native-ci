@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync/atomic"
+	"time"
 )
 
 func main() {
@@ -20,6 +22,8 @@ func main() {
 	}
 
 	count := 0
+	var healthy atomic.Bool
+	healthy.Store(true)
 
 	m := http.NewServeMux()
 	s := http.Server{Addr: addr, Handler: m}
@@ -28,15 +32,23 @@ func main() {
 
 	// Healthcheck endpoint
 	m.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		if !healthy.Load() {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprintf(w, "SHUTTING DOWN")
+			return
+		}
 		fmt.Fprintf(w, "OK")
 	})
 
 	// Simulate failure
-	boom, _ := os.ReadFile("public/shutdown.html")
 	m.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, string(boom))
-		log.Printf("Received shutdown request\n")
+		healthy.Store(false)
+		boom, _ := os.ReadFile("public/shutdown.html")
+		w.Write(boom)
+		log.Printf("Received shutdown request, failing health checks and waiting for drain\n")
 		go func() {
+			time.Sleep(12 * time.Second)
+			log.Printf("Drain period complete, shutting down server\n")
 			if err := s.Shutdown(context.Background()); err != nil {
 				log.Fatal(err)
 			}
@@ -44,15 +56,15 @@ func main() {
 	})
 
 	// Dashboard
-	dashboard, _ := os.ReadFile("public/dashboard.html")
 	m.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, string(dashboard))
+		dashboard, _ := os.ReadFile("public/dashboard.html")
+		w.Write(dashboard)
 		log.Printf("GET %s\n", r.URL.Path)
 	})
 
 	// Default
-	index, _ := os.ReadFile("public/index.html")
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		index, _ := os.ReadFile("public/index.html")
 		count += 1
 		fmt.Fprintf(w, string(index), c, count)
 		//log.Printf("GET %s\n", r.URL.Path)

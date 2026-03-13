@@ -1,18 +1,47 @@
 <html>
     <head>
+        <title>ECS Dashboard</title>
         <style type="text/css">
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            html { height: 100%; }
             body {
-                margin: 0;
-                padding: 0;
+                background: #0f172a;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                min-height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+            }
+            h1 {
+                color: #e2e8f0;
+                font-size: 1.25rem;
+                font-weight: 500;
+                margin-bottom: 20px;
+                letter-spacing: 0.025em;
+            }
+            h1 span {
+                color: #64748b;
+                font-weight: 400;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(8, 120px);
+                gap: 8px;
             }
             iframe {
                 border: 0;
-                width: 200px;
-                height: 200px;
+                width: 100%;
+                height: 120px;
+                border-radius: 10px;
+                overflow: hidden;
             }
         </style>
     </head>
     <body>
+        <h1>ECS Task Dashboard <span>/ load balancer view</span></h1>
+        <div class="grid">
             <iframe src="/"></iframe>
             <iframe src="/"></iframe>
             <iframe src="/"></iframe>
@@ -37,6 +66,6 @@
             <iframe src="/"></iframe>
             <iframe src="/"></iframe>
             <iframe src="/"></iframe>
+        </div>
     </body>
-    
 </html>

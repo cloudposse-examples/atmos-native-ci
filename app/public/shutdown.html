@@ -1,18 +1,32 @@
 <html onclick="window.location.href = '/'">
     <head>
-        <meta http-equiv="refresh" content="2; URL=/">
         <style type="text/css">
-            html {
-                font-family: "Impact", "Verdana";
-                background-color: red; 
-                transition: all 0.5s ease-in;
-                color: #fff; 
-                margin-top: 35px; 
-                text-align: center; 
-                font-size: 4em;
+            html, body {
+                height: 100%;
+                margin: 0;
+            }
+            body {
+                font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+                background-color: #991b1b;
+                color: rgba(255,255,255,0.95);
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 overflow: hidden;
+            }
+            .msg {
+                font-size: 3em;
+                font-weight: 700;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.25);
             }
         </style>
     </head>
-    <body>BOOM!!!</body>
+    <body><div class="msg">💥</div></body>
+    <script>
+        setInterval(function() {
+            fetch('/', {cache: 'no-store'}).then(function(r) {
+                if (r.ok) window.location.href = '/';
+            }).catch(function() {});
+        }, 2000);
+    </script>
 </html>
