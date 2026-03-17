@@ -84,7 +84,6 @@ jobs:
         id: deploy
         env:
           APP_IMAGE: "${{ needs.build.outputs.image }}:${{ needs.build.outputs.tag }}"
-          ATMOS_PROFILE: github
         run: |
           atmos terraform deploy app -s dev
 
