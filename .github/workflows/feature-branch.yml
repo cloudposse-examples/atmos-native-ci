@@ -13,7 +13,7 @@ permissions:
   contents: read
   statuses: write
 
- env:
+env:
   ATMOS_PROFILE: github 
 
 jobs:
