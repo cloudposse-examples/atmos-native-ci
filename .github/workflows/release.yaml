@@ -20,13 +20,13 @@ jobs:
     runs-on: ["ubuntu-latest"]
     steps:
       - name: Install Atmos
-        uses: cloudposse/github-action-setup-atmos@v2
+        uses: cloudposse/github-action-setup-atmos@v3
         with:
           install-wrapper: false
           atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: AWS Auth
         shell: bash
@@ -57,13 +57,13 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Install Atmos
-        uses: cloudposse/github-action-setup-atmos@v2
+        uses: cloudposse/github-action-setup-atmos@v3
         with:
           install-wrapper: false
           atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Deploy ECS Service
         shell: bash
@@ -82,13 +82,13 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Install Atmos
-        uses: cloudposse/github-action-setup-atmos@v2
+        uses: cloudposse/github-action-setup-atmos@v3
         with:
           install-wrapper: false
           atmos-version: ${{ vars.ATMOS_VERSION }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Deploy ECS Service
         shell: bash
