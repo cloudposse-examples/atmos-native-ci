@@ -13,6 +13,9 @@ permissions:
   contents: read
   statuses: write
 
+ env:
+  ATMOS_PROFILE: github 
+
 jobs:
   test:
     needs: [ build ]
