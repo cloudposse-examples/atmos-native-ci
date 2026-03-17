@@ -94,14 +94,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Toolchain
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          atmos toolchain install
-          atmos toolchain env --format github
-
       - name: Deploy ECS Service
         shell: bash
         id: deploy
