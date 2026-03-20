@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Deploy ECS Service
+      - name: Destroy ECS Service
         shell: bash
         env:
           ATMOS_PROFILE: github
