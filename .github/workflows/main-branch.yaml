@@ -60,6 +60,7 @@ jobs:
           repository: atmos-native-ci
           registry: ${{ vars.ECR_REGISTRY }}
           workdir: app
+          driver-opts: image=mirror.gcr.io/moby/buildkit:buildx-stable-1
 
     outputs:
       image: ${{ steps.build.outputs.image }}
