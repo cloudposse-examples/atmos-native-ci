@@ -18,18 +18,19 @@ env:
 jobs:
   promote:
     runs-on: ["ubuntu-latest"]
+    container:
+      image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
+    defaults:
+      run:
+        shell: bash
     steps:
-      - name: Install Atmos
-        uses: cloudposse/github-action-setup-atmos@v3
-        with:
-          install-wrapper: false
-          atmos-version: ${{ vars.ATMOS_VERSION }}
+      - name: Install Docker CLI
+        run: apt-get update && apt-get install -y docker.io bc
 
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: AWS Auth
-        shell: bash
         run: |
           atmos auth env --identity plat-dev/terraform --format=github
           atmos auth login --identity plat-dev/terraform
