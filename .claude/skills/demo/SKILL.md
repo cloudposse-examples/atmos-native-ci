@@ -34,13 +34,28 @@ Performs the standard demo rotation that exercises the CI/CD pipeline: flip the 
    git push -u origin <branch>
    ```
 
-6. **Open the PR against `main` with the `deploy` label already attached**:
+6. **Open the PR against `main` with the `deploy` label already attached**, using the repo's standard `what` / `why` / `references` body:
    ```sh
    gh pr create --base main --label deploy \
      --title "Change environment variable COLOR from <old> to <new>" \
-     --body "..."
+     --body "$(cat <<'EOF'
+   ## what
+
+   - Change the deployment background color from <old> to <green> by updating the `COLOR` environment variable in the default app stack configuration.
+
+   ## why
+
+   - Flip the deployment color for a blue/green deployment switch.
+
+   ## references
+
+   - N/A
+   EOF
+   )"
    ```
    The `--label deploy` flag is required — this is what triggers the deploy pipeline. If the label is missing, the PR will sit idle.
+
+   **Body format is mandatory.** Every demo PR in this repo uses the three H2 sections `## what`, `## why`, `## references` with bullet points under each. Do not substitute a "Summary / Test plan" template or any other format — match what prior PRs (e.g. #39, #42) used. If there are no references, write `- N/A` under that section.
 
 7. **Return the PR URL** to the user.
 
