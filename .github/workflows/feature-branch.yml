@@ -69,7 +69,7 @@ jobs:
       image: ${{ steps.build.outputs.image }}
       tag: ${{ steps.build.outputs.tag }}
 
-  deploy:
+  deploy-preview:
     needs: [ test, build ]
     runs-on: ["ubuntu-latest"]
     container:

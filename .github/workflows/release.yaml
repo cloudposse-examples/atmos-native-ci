@@ -2,6 +2,21 @@ name: Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to deploy (must already exist in ECR, e.g. 1.2.3)'
+        required: true
+        type: string
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - prod
+          - both
+        default: both
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,6 +32,7 @@ env:
 
 jobs:
   promote:
+    if: github.event_name == 'release'
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
@@ -44,13 +60,15 @@ jobs:
           from: sha-${{ github.sha }}
           to: ${{ github.event.release.tag_name }}
           use_metadata: false
-  
-    outputs:
-      image: ${{ steps.promote.outputs.image }}
-      tag: ${{ steps.promote.outputs.tag }}
-      
+
   deploy-staging:
     needs: [ promote ]
+    if: >-
+      always() &&
+      (needs.promote.result == 'success' || needs.promote.result == 'skipped') &&
+      (github.event_name == 'release' ||
+       inputs.environment == 'staging' ||
+       inputs.environment == 'both')
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
@@ -69,12 +87,18 @@ jobs:
         id: deploy
         env:
           ATMOS_PROFILE: github
-          APP_IMAGE: "${{ needs.promote.outputs.image }}:${{ needs.promote.outputs.tag }}"
+          APP_IMAGE: "${{ vars.ECR_REGISTRY }}/cloudposse-examples/atmos-native-ci:${{ github.event.release.tag_name || inputs.tag }}"
         run: |
           atmos terraform deploy app -s staging
 
   deploy-production:
-    needs: [ deploy-staging, promote ]
+    needs: [ deploy-staging ]
+    if: >-
+      always() &&
+      (needs.deploy-staging.result == 'success' || needs.deploy-staging.result == 'skipped') &&
+      (github.event_name == 'release' ||
+       inputs.environment == 'prod' ||
+       inputs.environment == 'both')
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
@@ -93,7 +117,6 @@ jobs:
         id: deploy
         env:
           ATMOS_PROFILE: github
-          APP_IMAGE: "${{ needs.promote.outputs.image }}:${{ needs.promote.outputs.tag }}"
+          APP_IMAGE: "${{ vars.ECR_REGISTRY }}/cloudposse-examples/atmos-native-ci:${{ github.event.release.tag_name || inputs.tag }}"
         run: |
           atmos terraform deploy app -s prod
-          
