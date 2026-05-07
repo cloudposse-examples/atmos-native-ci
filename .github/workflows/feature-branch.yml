@@ -74,6 +74,7 @@ jobs:
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
+    name: deploy / preview
     if: >-
       github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'deploy')
@@ -102,6 +103,7 @@ jobs:
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
+    name: deploy / dev
     if: github.event_name == 'merge_group'
     environment:
       name: dev
