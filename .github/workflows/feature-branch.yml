@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: ["main"]
     types: [opened, synchronize, reopened, labeled]
+  merge_group:
+    branches: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -72,7 +74,9 @@ jobs:
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'deploy') }}
+    if: >-
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'deploy')
     environment:
       name: preview
       url: ${{ steps.deploy.outputs.output_url }}
