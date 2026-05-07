@@ -83,9 +83,10 @@ See [`.github/workflows/`](.github/workflows/) for detailed workflow diagrams.
 
 | Workflow | Trigger | Action |
 |----------|---------|--------|
-| `main-branch.yaml` | Push to `main` | Build image → Deploy to dev → Create draft release |
-| `release.yaml` | Published release | Promote image → Deploy to staging and prod |
-| `feature-branch.yml` | PR with `deploy` label | Build image → Deploy to preview environment |
+| `feature-branch.yml` | PR, merge queue | Build image, run tests, deploy preview (PR with `deploy` label), deploy dev (merge queue gate) |
+| `validate.yml` | PR, merge queue | Lint CODEOWNERS |
+| `main-branch.yaml` | Push to `main` | Update draft release notes |
+| `release.yaml` | Published release, manual dispatch | Promote image, deploy to staging and/or prod |
 | `preview-cleanup.yml` | PR closed | Destroy preview environment |
 
 ### Deployment
@@ -132,9 +133,12 @@ atmos terraform deploy app -s prod
 
 #### CI/CD Deployment
 
-1. Push to `main` branch → automatically deploys to dev
-2. Create a GitHub release → automatically deploys to staging and prod
-3. Open a PR with `deploy` label → deploys to a preview environment
+1. Open a PR → CI runs build and tests; add the `deploy` label to deploy a preview environment.
+2. Approve and click "Merge when ready" → the merge queue runs build, tests, and `atmos terraform deploy app -s dev` before fast-forwarding `main` to the queue commit.
+3. Publish a GitHub release → automatically deploys to staging, then prod.
+4. Manually dispatch the release workflow with a `tag` and `environment` → redeploy a previous version (rollback or hotfix) without cutting a new release.
+
+See [`.github/workflows/README.md`](workflows/README.md) for design rationale and detailed sequence diagrams.
 
 ### Configuration
 
@@ -227,4 +231,4 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for full 
 All other trademarks referenced herein are the property of their respective owners.
 
 ---
-Copyright © 2017-2025 [Cloud Posse, LLC](https://cloudposse.com)
+Copyright © 2017-2026 [Cloud Posse, LLC](https://cloudposse.com)

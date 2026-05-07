@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: ["main"]
     types: [opened, synchronize, reopened, labeled]
+  merge_group:
+    branches: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -67,12 +69,15 @@ jobs:
       image: ${{ steps.build.outputs.image }}
       tag: ${{ steps.build.outputs.tag }}
 
-  deploy:
+  deploy-preview:
     needs: [ test, build ]
     runs-on: ["ubuntu-latest"]
     container:
       image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
-    if: ${{ contains(github.event.pull_request.labels.*.name, 'deploy') }}
+    name: deploy / preview
+    if: >-
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'deploy')
     environment:
       name: preview
       url: ${{ steps.deploy.outputs.output_url }}
@@ -92,3 +97,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           atmos terraform deploy app -s preview
+
+  deploy-dev:
+    needs: [ test, build ]
+    runs-on: ["ubuntu-latest"]
+    container:
+      image: ghcr.io/cloudposse/atmos:${{ vars.ATMOS_VERSION }}
+    name: deploy / dev
+    if: github.event_name == 'merge_group'
+    environment:
+      name: dev
+      url: ${{ steps.deploy.outputs.output_url }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Deploy ECS Service
+        id: deploy
+        env:
+          ATMOS_PROFILE: github
+          APP_IMAGE: "${{ needs.build.outputs.image }}:${{ needs.build.outputs.tag }}"
+        run: |
+          atmos terraform deploy app -s dev
