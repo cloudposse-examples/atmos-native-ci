@@ -155,12 +155,18 @@ variable "service" {
     force_new_deployment               = optional(bool, false)
     enable_execute_command             = optional(bool, false)
     capacity_provider_strategy_enabled = optional(bool, true)
+    capacity_provider                  = optional(string, "FARGATE")
     launch_type                        = optional(string, null)
     load_balancer_enabled              = optional(bool, true)
     wait_for_steady_state              = optional(bool, true)
   })
   description = "Configuration for service parameters."
   default     = {}
+
+  validation {
+    condition     = contains(["FARGATE", "FARGATE_SPOT"], var.service.capacity_provider)
+    error_message = "service.capacity_provider must be FARGATE or FARGATE_SPOT."
+  }
 }
 
 variable "autoscaling" {

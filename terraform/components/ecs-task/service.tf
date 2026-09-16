@@ -113,9 +113,9 @@ resource "aws_ecs_service" "default" {
   dynamic "capacity_provider_strategy" {
     for_each = var.service.capacity_provider_strategy_enabled ? [true] : []
     content {
-      capacity_provider = "FARGATE"
+      capacity_provider = var.service.capacity_provider
       weight            = 1
-      base              = 1
+      base              = 0
     }
   }
 
