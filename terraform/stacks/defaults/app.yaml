@@ -68,9 +68,15 @@ components:
                     awslogs-region: "us-east-2"
                     awslogs-stream-prefix: "app"
         url_path: /dashboard
+        service:
+          capacity_provider_strategy_enabled: true
+          capacity_provider: FARGATE_SPOT
+          force_new_deployment: true
         autoscaling:
-          min_capacity: 2
-          max_capacity: 4
+          # This is an interruption-tolerant demonstration workload. Keep one
+          # task warm instead of running two tasks at all times.
+          min_capacity: 1
+          max_capacity: 1
           scale_up_cooldown: 30
           scale_down_cooldown: 60
           rule:

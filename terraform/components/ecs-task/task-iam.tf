@@ -42,7 +42,7 @@ locals {
 
 data "aws_iam_policy_document" "ecs_task_policy" {
   dynamic "statement" {
-    for_each = local.efs_volume_resources != [] ? [local.efs_volume_resources] : []
+    for_each = length(local.efs_volume_resources) > 0 ? [local.efs_volume_resources] : []
     content {
       effect    = "Allow"
       resources = local.efs_volume_resources
