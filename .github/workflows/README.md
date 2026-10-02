@@ -35,10 +35,10 @@ Triggering on `release: published` is great for "deploy the new version," but us
 
 ### Image metadata flows through Atmos stores
 
-`atmos push` publishes the immutable ECR image and records its full image
-reference in the `image-metadata` SSM store with `aws ssm put-parameter`. The
-app stack resolves that reference with `!store`, so every deployment consumes
-the image selected for its stack (and, for previews, its PR number).
+`atmos app push` publishes the immutable ECR image and records its full image
+reference in the `image-metadata` SSM store with a native `type: store` step.
+The app stack resolves that reference with `!store`, so every deployment
+consumes the image selected for its stack (and, for previews, its PR number).
 
 ### Trade-off: queue bypass
 

@@ -9,7 +9,7 @@ components:
       image: atmos-native-ci:local
       build:
         context: app
-        dockerfile: Dockerfile
+        dockerfile: app/Dockerfile
         tags:
           - atmos-native-ci:local
       env:
