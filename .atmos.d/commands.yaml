@@ -36,6 +36,7 @@ commands:
               context: app
               dockerfile: Dockerfile
               tags: ['{{ index .Flags "image" }}']
+              load: true
               driver:
                 name: atmos-native-ci
                 provider: docker-container
@@ -59,6 +60,7 @@ commands:
               context: app
               dockerfile: Dockerfile
               tags: ['{{ index .Flags "image" }}']
+              load: true
               driver:
                 name: atmos-native-ci
                 provider: docker-container
