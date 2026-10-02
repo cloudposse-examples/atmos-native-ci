@@ -19,7 +19,7 @@ auth:
   identities:
     local-aws:
       kind: aws/emulator
-      emulator: aws
+      emulator: fixtures/aws
       default: true
 
 components:

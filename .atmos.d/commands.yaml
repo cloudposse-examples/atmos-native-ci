@@ -6,7 +6,7 @@ commands:
     description: Build, publish, deploy, and operate the example application
     commands:
       - name: build
-        description: Build the application image with the shared ECR Buildx cache
+        description: Build the application image, optionally using the shared ECR Buildx cache
         working_directory: !repo-root
         flags:
           - name: registry
@@ -24,19 +24,19 @@ commands:
         steps:
           - name: authenticate to ECR for Buildx cache
             type: shell
+            when: ci
             command: atmos aws ecr login --registry "{{ index .Flags "registry" }}"
-          - name: build
+          - name: build with registry cache
             type: container
             action: build
             provider: docker
+            when: ci
             with:
               engine: buildx
-              bake:
-                file: app/docker-bake.hcl
-                target: app
-                load: true
-                vars:
-                  APP_IMAGE: '{{ index .Flags "image" }}'
+              context: app
+              dockerfile: Dockerfile
+              tags: ['{{ index .Flags "image" }}']
+              load: true
               driver:
                 name: atmos-native-ci
                 provider: docker-container
@@ -50,6 +50,22 @@ commands:
                   - type: registry
                     ref: '{{ index .Flags "image-cache" }}'
                     mode: max
+          - name: build
+            type: container
+            action: build
+            provider: docker
+            when: local
+            with:
+              engine: buildx
+              context: app
+              dockerfile: Dockerfile
+              tags: ['{{ index .Flags "image" }}']
+              load: true
+              driver:
+                name: atmos-native-ci
+                provider: docker-container
+                opts:
+                  image: mirror.gcr.io/moby/buildkit:buildx-stable-1
 
       - name: push
         description: Authenticate to ECR, push the application image, and record it for deployment
@@ -83,15 +99,14 @@ commands:
             with:
               image: '{{ index .Flags "image" }}'
           - name: record deployment image
-            type: shell
-            command: |
-              aws ssm put-parameter \
-                --region us-east-2 \
-                --name "/atmos/app-on-ecs-v2/images/{{ index .Flags "stack" }}/app/{{ index .Flags "store-key" }}" \
-                --type String \
-                --value '"{{ index .Flags "image" }}"' \
-                --overwrite \
-                --no-cli-pager
+            type: store
+            action: write
+            with:
+              store: image-metadata
+              key: '{{ index .Flags "store-key" }}'
+              value: '{{ index .Flags "image" }}'
+              stack: '{{ index .Flags "stack" }}'
+              component: app
 
       - name: record
         description: Record an already-published application image for deployment
@@ -112,20 +127,34 @@ commands:
             default: image
         steps:
           - name: record deployment image
-            type: shell
-            command: |
-              aws ssm put-parameter \
-                --region us-east-2 \
-                --name "/atmos/app-on-ecs-v2/images/{{ index .Flags "stack" }}/app/{{ index .Flags "store-key" }}" \
-                --type String \
-                --value '"{{ index .Flags "image" }}"' \
-                --overwrite \
-                --no-cli-pager
+            type: store
+            action: write
+            with:
+              store: image-metadata
+              key: '{{ index .Flags "store-key" }}'
+              value: '{{ index .Flags "image" }}'
+              stack: '{{ index .Flags "stack" }}'
+              component: app
 
       - name: up
         description: Start the application locally using Atmos native containers
         steps:
-          - echo "Starting app at http://localhost:8080 (dashboard at http://localhost:8080/dashboard)"
+          - name: check for a port 8080 conflict
+            type: shell
+            on_failure: continue
+            output: none
+            command: |
+              holder=$(docker ps --filter "publish=8080" | tail -n +2 | awk '{print $NF}' | grep -v '^atmos-local-container-app$' || true)
+              if [ -n "$holder" ]; then
+                exit 1
+              fi
+          - type: toast
+            level: error
+            when: failure
+            content: "Port 8080 is already in use by another container. Run `docker ps` to find it, then `docker stop <name>` and retry."
+          - type: toast
+            level: info
+            content: "Starting app at http://localhost:8080 (dashboard at http://localhost:8080/dashboard)"
           - atmos container up app -s local
 
       - name: down
